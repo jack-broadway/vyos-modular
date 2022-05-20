@@ -1,0 +1,6 @@
+*.egg*
+.vscode
+__pycache__
+vendor/
+build/
+bin/
