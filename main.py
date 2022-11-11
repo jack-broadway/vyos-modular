@@ -171,7 +171,7 @@ class VyosModular:
                         "--custom-apt-entry",
                         repository["apt_entry"],
                         "--custom-apt-key",
-                        repository["gpg_key"],
+                        "/vyos/"+repository["gpg_key"],
                     ]
             if "packages" in module.config:
                 for package in module.config["packages"]:
