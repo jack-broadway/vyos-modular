@@ -148,12 +148,14 @@ class VyosModular:
         shutil.copy(iso_deb, self.build_dir / self.vyos_build_name / "packages")
 
     def _build_iso(self):
+        # Carry out iso build using current vyos build branch
         configure_cmd = [
-            "./configure",
+            "sudo",
+            "./build-vyos-image",
             "--architecture",
             "amd64",
             "--build-type",
-            "production",
+            "release",
             "--version",
             f"{config['name']}-{config['vyos_branch']}",
         ]
@@ -175,14 +177,10 @@ class VyosModular:
                 for package in module.config["packages"]:
                     configure_cmd += ["--custom-package", package]
 
-        vyos_modular.commands.run_vyos_build_cmd(
-            configure_cmd,
-            self.build_dir / self.vyos_build_name,
-            self.config["vyos_branch"],
-        )
+        configure_cmd += ["iso"]
 
         vyos_modular.commands.run_vyos_build_cmd(
-            ["sudo", "make", "iso"],
+            configure_cmd,
             self.build_dir / self.vyos_build_name,
             self.config["vyos_branch"],
         )
