@@ -7,6 +7,7 @@ A tool to create custom vyos installations
 | Module | Link |
 | --------- | ------------------------------------------------------ |
 | tailscale | https://github.com/jack-broadway/vyos-module-tailscale |
+| speedtest | https://github.com/kylechase/vyos-module-speedtest |
 ## Installation
 
 This tool is only supported on linux as it shells out to linux tools.
