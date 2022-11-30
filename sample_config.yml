@@ -1,6 +1,6 @@
 name: tailscale
-vyos_branch: equuleus
+vyos_branch: current
 modules:
   - type: git
     url: https://github.com/jack-broadway/vyos-module-tailscale.git
-    version: main
+    version: current

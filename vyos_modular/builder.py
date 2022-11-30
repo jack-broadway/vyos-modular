@@ -161,11 +161,6 @@ class Builder(abc.ABC):
     def build_core(self):
         pass
 
-    @abc.abstractmethod
-    def build_iso(self):
-        return NotImplemented
-
-
 class EquuleusBuilder(Builder):
     def _build_iso(self):
         configure_cmd = [
