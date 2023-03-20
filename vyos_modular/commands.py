@@ -1,3 +1,4 @@
+import sys
 import pathlib
 import subprocess
 import typing as t
@@ -22,7 +23,6 @@ def run_vyos_core_cmd(
         "docker",
         "run",
         "--rm",
-        "-it",
         "--privileged",
         "--sysctl",
         "net.ipv6.conf.lo.disable_ipv6=0",
@@ -30,8 +30,12 @@ def run_vyos_core_cmd(
         f"{vyos_core_dir.resolve().parents[0]}:/vyos",
         "-w",
         "/vyos/vyos-core",
-        f"vyos/vyos-build:{vyos_branch}",
     ]
+
+    if sys.stdout.isatty():
+        docker_args.append("-it")
+
+    docker_args.append(f"vyos/vyos-build:{vyos_branch}")
 
     ret = _run_command(docker_args + cmd, cwd=vyos_core_dir)
     if ret != 0:
@@ -46,14 +50,17 @@ def run_vyos_build_cmd(
         "docker",
         "run",
         "--rm",
-        "-it",
         "--privileged",
         "-v",
         f"{vyos_build_dir.resolve()}:/vyos",
         "-w",
         "/vyos",
-        f"vyos/vyos-build:{vyos_branch}",
     ]
+
+    if sys.stdout.isatty():
+        docker_args.append("-it")
+
+    docker_args.append(f"vyos/vyos-build:{vyos_branch}")
 
     ret = _run_command(docker_args + cmd)
     if ret != 0:
