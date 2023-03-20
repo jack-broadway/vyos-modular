@@ -14,9 +14,11 @@ if __name__ == "__main__":
         config = yaml.load(config_fh, Loader=yaml.SafeLoader)
 
     match config["vyos_branch"]:
-        case "equuleus":
+        case "equuleus" | "1.3":
+            config["vyos_branch"] = "equuleus"
             builder = vyos_modular.builder.EquuleusBuilder(config)
-        case "current":
+        case "current" | "sagitta" | "1.4":
+            config["vyos_branch"] = "current"
             builder = vyos_modular.builder.SaggitaBuilder(config)
         case other:
             raise ValueError(f"Unsupported build branch {config['vyos_branch']}")
