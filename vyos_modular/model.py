@@ -13,12 +13,19 @@ class Repositories:
 
 
 @dataclass
+class PackageURL:
+    url: str
+    filename: Optional[str] = None
+
+
+@dataclass
 class ModuleConfig:
     name: str
     version: str
     description: Optional[str] = None
     packages: Optional[List[str]] = None
     repositories: Optional[List[Repositories]] = None
+    package_urls: Optional[List[PackageURL]] = None
 
 
 def load_module_config(module_path: pathlib.Path) -> ModuleConfig:

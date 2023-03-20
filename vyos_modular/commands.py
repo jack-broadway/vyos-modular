@@ -1,7 +1,11 @@
+from typing import Optional
+import urllib.request
 import sys
 import pathlib
 import subprocess
 import typing as t
+
+from vyos_modular.model import PackageURL
 
 
 def _run_command(
@@ -98,3 +102,16 @@ def apply_patch(patch_path: pathlib.Path, dst: pathlib.Path):
     ret = _run_command(["git", "apply", str(patch_path.resolve())], cwd=dst)
     if ret != 0:
         raise RuntimeError("Failed to apply patch")
+
+
+def download_package(packages_dir: pathlib.Path, package_url: PackageURL):
+    package_filename = package_url.filename
+    if package_filename is None:
+        package_filename = package_url.url.split("/")[-1]
+        if not package_filename.endswith("deb"):
+            raise RuntimeError("Cannot determine package filename after download")
+
+    package_path = packages_dir / package_filename
+
+    print(f"INFO: Downloading {package_url} to {package_path}")
+    urllib.request.urlretrieve(package_url.url, package_path)
