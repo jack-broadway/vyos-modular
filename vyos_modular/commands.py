@@ -113,5 +113,21 @@ def download_package(packages_dir: pathlib.Path, package_url: PackageURL):
 
     package_path = packages_dir / package_filename
 
-    print(f"INFO: Downloading {package_url} to {package_path}")
+    print(f"INFO: Downloading {package_url.url} to {package_path}")
     urllib.request.urlretrieve(package_url.url, package_path)
+
+
+# Execute the contents of `script_body` as a script using bash with build_dir as the CWD
+def run_script(build_dir: pathlib.Path, current_build_name: str, script_body: str):
+    filename = "build_script.sh"
+    script_path = build_dir / filename
+    script_path.write_text(script_body)
+
+    ret = _run_command(
+        ["bash", str(script_path.resolve())], cwd=(build_dir / current_build_name)
+    )
+    if ret != 0:
+        raise RuntimeError(
+            "Failure during script command. Build directory integrity may be compromised!!"
+        )
+    script_path.unlink()

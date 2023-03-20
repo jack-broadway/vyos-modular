@@ -142,6 +142,18 @@ class Builder(abc.ABC):
                     packages_dir = self.build_dir / self.vyos_build_name / "packages"
                     vyos_modular.commands.download_package(packages_dir, package_url)
 
+            if module.config.vyos_core_script:
+                vyos_modular.commands.run_script(
+                    self.build_dir, self.vyos_core_name, module.config.vyos_core_script
+                )
+
+            if module.config.vyos_build_script:
+                vyos_modular.commands.run_script(
+                    self.build_dir,
+                    self.vyos_build_name,
+                    module.config.vyos_build_script,
+                )
+
     def _build_core(self):
         # Build vyos-core
         vyos_modular.commands.run_vyos_core_cmd(

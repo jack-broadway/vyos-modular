@@ -26,6 +26,8 @@ class ModuleConfig:
     packages: Optional[List[str]] = None
     repositories: Optional[List[Repositories]] = None
     package_urls: Optional[List[PackageURL]] = None
+    vyos_core_script: Optional[str] = None
+    vyos_build_script: Optional[str] = None
 
 
 def load_module_config(module_path: pathlib.Path) -> ModuleConfig:
