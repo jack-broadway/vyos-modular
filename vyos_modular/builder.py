@@ -4,9 +4,8 @@ import pathlib
 import shutil
 import typing as t
 
-import yaml
-
 import vyos_modular.commands
+from vyos_modular.model import ModuleConfig, Repositories, load_module_config
 
 VYOS_CORE_GIT = "https://github.com/vyos/vyos-1x.git"
 VYOS_BUILD_GIT = "https://github.com/vyos/vyos-build.git"
@@ -19,7 +18,7 @@ VENDOR_DIR.mkdir(exist_ok=True)
 class VyosModule:
     name: str
     path: pathlib.Path
-    config: t.Dict
+    config: ModuleConfig
 
 
 class Builder(abc.ABC):
@@ -90,12 +89,12 @@ class Builder(abc.ABC):
                 raise RuntimeError(f"Unsupported module type {module['type']}")
 
             # Process module.yaml file
-            with open(module_dest / "module.yaml") as config_fh:
-                module_config = yaml.load(config_fh, Loader=yaml.SafeLoader)
+
+            module_config = load_module_config(module_dest)
 
             self.modules.append(
                 VyosModule(
-                    name=module_config["name"], path=module_dest, config=module_config
+                    name=module_config.name, path=module_dest, config=module_config
                 )
             )
 
@@ -183,16 +182,16 @@ class EquuleusBuilder(Builder):
 
         # Build list of additional repositories and packages from modules
         for module in self.modules:
-            if "repositories" in module.config:
-                for repository in module.config["repositories"]:
+            if module.config.repositories:
+                for repository in module.config.repositories:
                     configure_cmd += [
                         "--custom-apt-entry",
-                        repository["apt_entry"],
+                        repository.apt_entry,
                         "--custom-apt-key",
-                        repository["gpg_key"],
+                        repository.gpg_key,
                     ]
-            if "packages" in module.config:
-                for package in module.config["packages"]:
+            if module.config.packages:
+                for package in module.config.packages:
                     configure_cmd += ["--custom-package", package]
 
         vyos_modular.commands.run_vyos_build_cmd(
@@ -231,16 +230,16 @@ class SaggitaBuilder(Builder):
 
         # Build list of additional repositories and packages from modules
         for module in self.modules:
-            if "repositories" in module.config:
-                for repository in module.config["repositories"]:
+            if module.config.repositories:
+                for repository in module.config.repositories:
                     configure_cmd += [
                         "--custom-apt-entry",
-                        repository["apt_entry"],
+                        repository.apt_entry,
                         "--custom-apt-key",
-                        "/vyos/" + repository["gpg_key"],
+                        "/vyos/" + repository.gpg_key,
                     ]
-            if "packages" in module.config:
-                for package in module.config["packages"]:
+            if module.config.packages:
+                for package in module.config.packages:
                     configure_cmd += ["--custom-package", package]
 
         configure_cmd += ["iso"]
