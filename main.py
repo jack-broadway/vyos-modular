@@ -10,7 +10,7 @@ if __name__ == "__main__":
     parser.add_argument("--config", "-c", type=pathlib.Path, required=True)
     args = parser.parse_args()
 
-    with open(args.config) as config_fh:
+    with open(args.config, "r", encoding="utf-8") as config_fh:
         config = yaml.load(config_fh, Loader=yaml.SafeLoader)
 
     match config["vyos_branch"]:
