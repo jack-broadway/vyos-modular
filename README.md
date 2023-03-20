@@ -4,10 +4,13 @@ A tool to create custom vyos installations
 
 ## Modules
 
-| Module | Link |
-| --------- | ------------------------------------------------------ |
-| tailscale | https://github.com/jack-broadway/vyos-module-tailscale |
-| speedtest | https://github.com/kylechase/vyos-module-speedtest |
+| Module                  | Link                                                   |
+|-------------------------|--------------------------------------------------------|
+| tailscale               | https://github.com/jack-broadway/vyos-module-tailscale |
+| speedtest               | https://github.com/kylechase/vyos-module-speedtest     |
+| mellanox firmware tools | https://github.com/Ramblurr/vyos-module-mft            |
+| gitops tools            | https://github.com/Ramblurr/vyos-module-gitops         |
+
 ## Installation
 
 This tool is only supported on linux as it shells out to linux tools.
