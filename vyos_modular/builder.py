@@ -26,6 +26,7 @@ class Builder(abc.ABC):
     def __init__(self, config):
         super().__init__()
 
+        self.should_build_core = False
         self.config = config
         self.build_dir = pathlib.Path("build")
         self.bin_dir = pathlib.Path("bin")
@@ -103,6 +104,7 @@ class Builder(abc.ABC):
             print(f"INFO: Applying module {module.name}")
             vyos_core_overlay_path = module.path / self.vyos_core_name / "overlay"
             if vyos_core_overlay_path.is_dir():
+                self.should_build_core = True
                 print(f"INFO: Applying vyos-core overlay from {module.name}")
                 overlay_destination_path = self.build_dir / self.vyos_core_name
                 vyos_modular.commands.apply_overlay(
@@ -110,6 +112,7 @@ class Builder(abc.ABC):
                 )
             vyos_core_patch_path = module.path / self.vyos_core_name / "patches"
             if vyos_core_patch_path.is_dir():
+                self.should_build_core = True
                 for patch in vyos_core_patch_path.iterdir():
                     print(
                         f"INFO: Applying patch {patch.name} from {module.name} to vyos-core"
@@ -155,11 +158,13 @@ class Builder(abc.ABC):
         self._clone_vyos()
         self._clone_modules()
         self._apply_modules()
-        self._build_core()
+        if self.should_build_core:
+            self._build_core()
         self._build_iso()
 
     def build_core(self):
         pass
+
 
 class EquuleusBuilder(Builder):
     def _build_iso(self):
