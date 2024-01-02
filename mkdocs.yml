@@ -1,0 +1,11 @@
+site_name: vyos-modular
+site_url: https://jack-broadway.github.io/vyos-modular/
+theme: readthedocs
+nav:
+  - Home: index.md
+  - Usage: usage.md
+  - Modules: module_list.md
+  - Module Development:
+      - Structure: modules/spec.md
+      - Ansible: modules/ansible.md
+      - Core Modification: modules/core-modification.md
