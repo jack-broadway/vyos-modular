@@ -1,0 +1,11 @@
+- hosts: local
+  gather_facts: false
+  connection: local
+  vars:
+    vyos_iso_local: /ansible/isos/{{ iso_name }}
+  roles:
+    - prepare
+{%- for role in roles %}
+    - {{ role }}
+{% endfor %}
+    

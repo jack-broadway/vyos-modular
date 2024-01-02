@@ -1,0 +1,7 @@
+- name: Mount ISO
+  ansible.builtin.include_tasks:
+    file: mount-iso.yml
+
+- name: Set facts
+  ansible.builtin.include_tasks:
+    file: set-facts.yml

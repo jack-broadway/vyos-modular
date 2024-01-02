@@ -38,8 +38,8 @@ class GlobalConfig:
         self.vendor_dir.mkdir(exist_ok=True)
 
     def _process_config(self):
-        self._branch = self._raw_config["vyos_branch"]
-        self._release = self._raw_config["vyos_release"]
+        self._branch = self._raw_config["vyos_target"]["branch"]
+        self._release = self._raw_config["vyos_target"]["release"]
         self._modules: t.List[VyosModule] = []
 
         for module in self._raw_config["modules"]:

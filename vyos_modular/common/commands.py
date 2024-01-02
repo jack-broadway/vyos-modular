@@ -50,6 +50,30 @@ def run_vyos_build_cmd(
         raise RuntimeError("Failure during vyos build command")
 
 
+def run_vyos_customize_cmd(
+    cmd: t.Iterable[str],
+    working_dir: pathlib.Path,
+):
+    docker_args = [
+        "docker",
+        "run",
+        "--rm",
+        "--sysctl",
+        "net.ipv6.conf.lo.disable_ipv6=0",
+        "--privileged",
+        "-v",
+        f"{working_dir.resolve()}:/ansible",
+        "-w",
+        "/ansible",
+        "-it",
+        f"jackbroadway/vyos-modular",
+    ]
+
+    ret = _run_command(docker_args + cmd)
+    if ret != 0:
+        raise RuntimeError("Failure during vyos build command")
+
+
 def clone_repo(url: str, branch: str, output_folder: pathlib.Path):
     git_args = [
         "git",

@@ -6,6 +6,7 @@ import yaml
 import vyos_modular.iso_build.builder
 from vyos_modular.common.config import GlobalConfig
 from vyos_modular.core_build.builder import CoreBuilder
+from vyos_modular.iso_customize.builder import CustomBuilder
 
 
 def _iso_build(args):
@@ -37,6 +38,9 @@ def _build(args):
         print("There are modules that patch vyos-core, building now")
         builder = CoreBuilder()
         builder.build()
+
+    custom_builder = CustomBuilder()
+    custom_builder.build()
 
 
 def run(args):
