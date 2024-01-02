@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://jack-broadway.github.io/vyos-modular/modules/spec/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Structure - vyos-modular</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Structure";
+        var mkdocs_page_input_path = "modules/spec.md";
+        var mkdocs_page_url = "/vyos-modular/modules/spec/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> vyos-modular
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../usage/">Usage</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../module_list/">Modules</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Module Development</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Structure</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#example-structure">Example Structure</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#moduleyaml">module.yaml</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#directory-structure">Directory Structure</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ansible/">Ansible</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../core-modification/">Core Modification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">vyos-modular</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Module Development</li>
+      <li class="breadcrumb-item active">Structure</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="module-specification">Module Specification</h1>
+<p>In the root of a module there needs to be a <code>module.yaml</code> that has information needed by <code>vyos-modular</code></p>
+<h2 id="best-practices">Best Practices</h2>
+<ul>
+<li>Tag your modules so that users can target specific versions in their config.</li>
+<li>Try to make your ansible roles work regardless of version by using the available variables to determine target vyos version</li>
+<li>Try to make your core patches as generic as possible so they have less chance of breaking between updates</li>
+</ul>
+<h2 id="example-structure">Example Structure</h2>
+<h3 id="moduleyaml">module.yaml</h3>
+<pre><code class="language-yml"># This is always version 2
+version: 2
+metadata:
+  name: my-first-module
+spec:
+  # Patches core is set to true if you want to perform modifications on the vyos-1x code
+  patches_core: true
+  # These roles are run in the order they appear in your spec
+  ansible_roles:
+    - role_a
+    - role_b
+</code></pre>
+<h3 id="directory-structure">Directory Structure</h3>
+<pre><code class="language-console">├── roles
+│   ├── role_a
+│   │   ├── tasks
+│   │       │── main.yml
+│   ├── role_b
+│   │   ├── tasks
+│   │   │   │── main.yml
+│   │   ├── templates
+│   │       ├── config.yml.j2
+├── vyos-core
+│   ├── equuleus
+│   │   ├── overlay
+│   │   │   ├── interface_definitions
+│   │   │       ├── service_newservice.xml.in
+│   │   ├── patches
+│   │       ├── my_equuleus_feature.patch
+│   ├── sagitta
+│   │   ├── overlay -&gt; ../equuleus/overlay
+│   │   ├── patches
+│   │       ├── my_sagitta_feature.patch
+│   ├── current -&gt; sagitta
+└── module.yaml
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../module_list/" class="btn btn-neutral float-left" title="Modules"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../ansible/" class="btn btn-neutral float-right" title="Ansible">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../../module_list/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../ansible/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

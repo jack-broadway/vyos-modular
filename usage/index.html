@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://jack-broadway.github.io/vyos-modular/usage/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Usage - vyos-modular</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Usage";
+        var mkdocs_page_input_path = "usage.md";
+        var mkdocs_page_url = "/vyos-modular/usage/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> vyos-modular
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Usage</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#commands">Commands</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#building-a-base-iso">Building a base ISO</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../module_list/">Modules</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Module Development</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../modules/spec/">Structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../modules/ansible/">Ansible</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../modules/core-modification/">Core Modification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">vyos-modular</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Usage</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="usage">Usage</h1>
+<h2 id="installation">Installation</h2>
+<p>This tool is only supported on linux as it shells out to linux tools.</p>
+<p>Required tools on host system</p>
+<ul>
+<li><code>git</code></li>
+<li><code>rsync</code></li>
+<li><code>docker</code></li>
+</ul>
+<pre><code class="language-bash">pip install -r requirements.txt
+</code></pre>
+<h2 id="commands">Commands</h2>
+<p>Copy your base iso to the <code>dist/isos</code> folder and copy <code>sample_config.yml</code> to your desired location.
+The sample config below builds with the tailscale module for the 1.3.5 LTS release of equuleus</p>
+<pre><code class="language-yml"># tailscale-1.3.5-config.yml
+name: tailscale-1.3.5
+vyos_target:
+  # This is used to target an appropriate vyos-core version when using modules
+  # that patch the core
+  branch: 1.3.5
+  release: equuleus
+  # This is the name of an iso found under dist/isos
+  iso: vyos-1.3.5-amd64.iso
+modules:
+  - type: git
+    url: https://github.com/jack-broadway/vyos-module-tailscale.git
+    version: main
+  # There should be a module.yaml at the location pointed to by path
+  - type: local
+    path: /path/to/my/in_dev_module
+</code></pre>
+<p>Artifacts will output in the bin folder. If unprivileged users dont have access to docker, you will need to run using sudo or root account</p>
+<pre><code class="language-bash">python3 main.py build -c tailscale-1.3.5-config.yml
+</code></pre>
+<h2 id="building-a-base-iso">Building a base ISO</h2>
+<p>If you dont have access to LTS ISOs or want to target a specific commit, vyos-modular can also be used to build base isos.</p>
+<pre><code class="language-bash"># Build an ISO from the LTS 1.3.5 tag
+python3 main.py build_iso -b 1.3.5 -r equuleus
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href=".." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../module_list/" class="btn btn-neutral float-right" title="Modules">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../module_list/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

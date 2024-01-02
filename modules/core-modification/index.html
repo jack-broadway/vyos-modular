@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://jack-broadway.github.io/vyos-modular/modules/core-modification/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Core Modification - vyos-modular</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Core Modification";
+        var mkdocs_page_input_path = "modules/core-modification.md";
+        var mkdocs_page_url = "/vyos-modular/modules/core-modification/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> vyos-modular
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../usage/">Usage</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../module_list/">Modules</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Module Development</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../spec/">Structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ansible/">Ansible</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Core Modification</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#overlay">Overlay</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#patching">Patching</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">vyos-modular</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Module Development</li>
+      <li class="breadcrumb-item active">Core Modification</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="core-modification">Core Modification</h1>
+<p>For more complicated modules (i.e where you want to add functionality to the vyos cli) you will need to patch the core vyos package.
+vyos-modular has two mechanisms for this, the overlay system and the git patch system. Both systems operate on the <a href="https://github.com/vyos/vyos-1x">vyos/vyos-1x</a> repository.
+To enable for your module, set <code>patches_core: true</code> in your module spec section.</p>
+<p>For a sample module, see <a href="https://github.com/jack-broadway/vyos-module-tailscale">jack-broadway/vyos-module-tailscale</a> as it uses both the overlay and core patching components</p>
+<h2 id="overlay">Overlay</h2>
+<p>Create <code>vyos-core/{vyos_release}/overlay</code> folder in your module. Any directories created under here will be placed into the <code>vyos-1x</code> repository before building.
+More information on creating commands can be found in the vyos documentation <a href="https://docs.vyos.io/en/sagitta/contributing/development.html">Development - VyOS 1.4.x (sagitta)</a>.</p>
+<p>For example, to create a new command tree and its python handler for a custom service, create a directory structure as follows:</p>
+<pre><code class="language-console">├── vyos-core
+    ├── sagitta
+        ├── overlay
+            │── src
+            │   ├── conf_mode
+            │       ├── service_myservice.py
+            │── interface-definitions
+                ├── service_myservice.xml.in
+</code></pre>
+<p>If your overlay doesnt need to change between vyos releases, simply symlink the other releases to your overlay</p>
+<pre><code class="language-bash">ln -s vyos-core/sagitta/overlay vyos-core/current/overlay
+</code></pre>
+<h2 id="patching">Patching</h2>
+<p>If your module needs to modifying existing functionality of vyos, git patches can be used. </p>
+<p>To create, clone your target version of the <code>vyos-1x</code> repository and make your changes. Then use <code>git diff &gt; my_patch.patch</code> and put in the appropriate release patch folder in your module</p>
+<pre><code class="language-console">├── vyos-core
+    ├── sagitta
+    │   ├── patches
+    │       │── my_sagitta_patch.patch
+    ├── current
+        ├── patches
+            ├── my_current_patch.patch
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../ansible/" class="btn btn-neutral float-left" title="Ansible"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../ansible/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

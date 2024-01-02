@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://jack-broadway.github.io/vyos-modular/modules/ansible/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Ansible - vyos-modular</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Ansible";
+        var mkdocs_page_input_path = "modules/ansible.md";
+        var mkdocs_page_url = "/vyos-modular/modules/ansible/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> vyos-modular
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../usage/">Usage</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../module_list/">Modules</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Module Development</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../spec/">Structure</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Ansible</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#ansible-variables">Ansible Variables</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#example-role">Example Role</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#tasksmainyml">tasks/main.yml</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#templatesookla-speedtestlistj2">templates/ookla-speedtest.list.j2</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../core-modification/">Core Modification</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">vyos-modular</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Module Development</li>
+      <li class="breadcrumb-item active">Ansible</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="ansible-roles">Ansible Roles</h2>
+<p>vyos-modular supports modification of the system through ansible. Modules have access to the squashfs filesystem that gets mounted during vyos boot to become the root filesystem.</p>
+<h3 id="ansible-variables">Ansible Variables</h3>
+<p>The following ansible variables are available to your roles</p>
+<table>
+<thead>
+<tr>
+<th>variable name</th>
+<th>description</th>
+<th>sample value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vyos_cd_root</code></td>
+<td>The mount path of the ISO</td>
+<td><code>/mnt/cdrom</code></td>
+</tr>
+<tr>
+<td><code>vyos_install_root</code></td>
+<td>The root path to the unpacked root filesystem</td>
+<td><code>/mnt/inst_root</code></td>
+</tr>
+<tr>
+<td><code>vyos_version</code></td>
+<td>The full version string of the vyos image</td>
+<td><code>1.4-rolling-202307250317</code></td>
+</tr>
+<tr>
+<td><code>vyos_debian_codename</code></td>
+<td>The debian release name for this vyos version</td>
+<td><code>bookworm</code></td>
+</tr>
+<tr>
+<td><code>vyos_release</code></td>
+<td>The vyos release name for this version</td>
+<td><code>sagitta</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="example-role">Example Role</h3>
+<p>The following role is taken from <a href="https://github.com/kylechase/vyos-module-speedtest">kylechase/vyos-module-speedtest</a> as it is a good example of a common module goal to install new packages</p>
+<h4 id="tasksmainyml">tasks/main.yml</h4>
+<pre><code class="language-yml">- name: Copy speedtest GPG repo key
+  ansible.builtin.copy:
+    src: files/ookla_speedtest-cli-archive-keyring.gpg
+    dest: &quot;{{ vyos_install_root }}/usr/share/keyrings/ookla_speedtest-cli-archive-keyring&quot;
+    mode: '0644'
+
+- name: Dearmour speedtest GPG key
+  ansible.builtin.command: chroot {{ vyos_install_root }} gpg --dearmor /usr/share/keyrings/ookla_speedtest-cli-archive-keyring
+
+- name: Copy speedtest repo config
+  ansible.builtin.template:
+    src: templates/ookla-speedtest.list.j2
+    dest: &quot;{{ vyos_install_root }}/etc/apt/sources.list.d/ookla-speedtest.list&quot;
+    mode: '0644'
+
+- name: apt-get update
+  command: chroot {{ vyos_install_root }} apt-get update
+
+- name: install speedtest
+  command: chroot {{ vyos_install_root }} apt-get install -y speedtest
+
+- name: apt-get clean
+  command: chroot {{ vyos_install_root }} apt-get clean
+
+- name: delete apt lists from cache
+  command: chroot {{ vyos_install_root }} rm -rf /var/lib/apt/lists/
+
+- name: Delete ookla-speedtest.list
+  file:
+    path: &quot;{{ vyos_install_root }}/etc/apt/sources.list.d/ookla-speedtest.list&quot;
+    state: absent
+
+- name: Delete ookla_speedtest-cli-archive-keyring.gpg
+  file:
+    path: &quot;{{ vyos_install_root }}/usr/share/keyrings/ookla_speedtest-cli-archive-keyring.gpg&quot;
+    state: absent
+</code></pre>
+<h4 id="templatesookla-speedtestlistj2">templates/ookla-speedtest.list.j2</h4>
+<pre><code class="language-console">deb [signed-by=/usr/share/keyrings/ookla_speedtest-cli-archive-keyring.gpg] https://packagecloud.io/ookla/speedtest-cli/debian/ {{ vyos_debian_codename }} main
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../spec/" class="btn btn-neutral float-left" title="Structure"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../core-modification/" class="btn btn-neutral float-right" title="Core Modification">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../spec/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../core-modification/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
