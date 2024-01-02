@@ -1,3 +1,7 @@
+"""
+Wrapper commands for using docker containers and git
+"""
+import os
 import pathlib
 import subprocess
 import typing as t
@@ -7,7 +11,7 @@ def _run_command(
     cmd: t.Union[str, t.Iterable[str]], cwd: t.Optional[pathlib.Path] = None
 ) -> int:
     if isinstance(cmd, str):
-        cmd = cmd.split(" ")
+        cmd = cmd.split("")
 
     print(f"DEBUG: Running command '{' '.join(cmd)}' inside {cwd}")
     proc = subprocess.run(cmd, cwd=cwd)
@@ -15,44 +19,29 @@ def _run_command(
     return proc.returncode
 
 
-def run_vyos_core_cmd(
-    cmd: t.Iterable[str], vyos_core_dir: pathlib.Path, vyos_branch: str
+def run_vyos_build_cmd(
+    cmd: t.Iterable[str],
+    vyos_build_dir: pathlib.Path,
+    vyos_release: str,
+    sub_working_dir: str = None,
 ):
     docker_args = [
         "docker",
         "run",
         "--rm",
-        "-it",
-        "--privileged",
         "--sysctl",
         "net.ipv6.conf.lo.disable_ipv6=0",
-        "-v",
-        f"{vyos_core_dir.resolve().parents[0]}:/vyos",
-        "-w",
-        "/vyos/vyos-core",
-        f"vyos/vyos-build:{vyos_branch}",
-    ]
-
-    ret = _run_command(docker_args + cmd, cwd=vyos_core_dir)
-    if ret != 0:
-        raise RuntimeError("Failure during vyos core command")
-
-
-def run_vyos_build_cmd(
-    cmd: t.Iterable[str], vyos_build_dir: pathlib.Path, vyos_branch: str
-):
-
-    docker_args = [
-        "docker",
-        "run",
-        "--rm",
-        "-it",
         "--privileged",
         "-v",
         f"{vyos_build_dir.resolve()}:/vyos",
         "-w",
-        "/vyos",
-        f"vyos/vyos-build:{vyos_branch}",
+        f"/vyos/{sub_working_dir}",
+        "-e",
+        f"GOSU_UID={os.getuid()}",
+        "-e",
+        f"GOSU_GID={os.getgid()}",
+        "-it",
+        f"vyos/vyos-build:{vyos_release}",
     ]
 
     ret = _run_command(docker_args + cmd)

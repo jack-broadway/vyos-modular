@@ -1,24 +1,21 @@
-import argparse
-import pathlib
-
 import yaml
 
-import vyos_modular.builder
+from vyos_modular.common.config import GlobalConfig
+from vyos_modular.core_build.builder import CoreBuilder
+
+
+def main():
+    with open("sample_config.yml") as config_fh:
+        modular_config = yaml.load(config_fh, Loader=yaml.SafeLoader)
+
+    config = GlobalConfig()
+    config.config = modular_config
+
+    builder = CoreBuilder()
+    builder.prepare()
+    builder.apply()
+    builder.build()
+
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Custom Vyos image builder")
-    parser.add_argument("--config", "-c", type=pathlib.Path, required=True)
-    args = parser.parse_args()
-
-    with open(args.config) as config_fh:
-        config = yaml.load(config_fh, Loader=yaml.SafeLoader)
-
-    match config["vyos_branch"]:
-        case "equuleus":
-            builder = vyos_modular.builder.EquuleusBuilder(config)
-        case "current":
-            builder = vyos_modular.builder.SaggitaBuilder(config)
-        case other:
-            raise ValueError(f"Unsupported build branch {config['vyos_branch']}")
-
-    builder.run()
+    main()
