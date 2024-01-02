@@ -23,8 +23,9 @@ def run_vyos_build_cmd(
     cmd: t.Iterable[str],
     vyos_build_dir: pathlib.Path,
     vyos_release: str,
-    sub_working_dir: str = None,
+    sub_working_dir: str = "",
 ):
+    working_dir = pathlib.Path("/vyos") / sub_working_dir
     docker_args = [
         "docker",
         "run",
@@ -35,7 +36,7 @@ def run_vyos_build_cmd(
         "-v",
         f"{vyos_build_dir.resolve()}:/vyos",
         "-w",
-        f"/vyos/{sub_working_dir}",
+        str(working_dir),
         "-e",
         f"GOSU_UID={os.getuid()}",
         "-e",

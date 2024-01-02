@@ -50,8 +50,10 @@ class CoreBuilder:
                     )
 
     def build(self):
-        # Build vyos-core. Because dpkg will drop the built deb one level up, have to
-        # do the gross cd thing below
+        self.prepare()
+        self.apply()
+        # Build vyos-core. Because dpkg will drop the built deb one level up,
+        # have to mount the build directory and set the working directory one level lower
         vyos_modular.common.commands.run_vyos_build_cmd(
             [
                 "dpkg-buildpackage",
