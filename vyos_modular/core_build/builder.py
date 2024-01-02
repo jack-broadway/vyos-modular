@@ -1,5 +1,3 @@
-import abc
-import pathlib
 import shutil
 import typing as t
 
@@ -31,6 +29,9 @@ class CoreBuilder:
 
     def apply(self):
         for module in self.config.modules:
+            if not module.patches_core:
+                continue
+
             print(f"INFO: Applying module {module.name}")
             vyos_core_overlay_path = module.path / "vyos-core" / "overlay"
             if vyos_core_overlay_path.is_dir():
@@ -70,3 +71,6 @@ class CoreBuilder:
         # Copy artifacts
         for deb in self.config.build_dir.glob("*.deb"):
             shutil.copy(deb, self.config.bin_dir)
+
+        iso_deb = next(self.config.build_dir.glob("vyos-1x_*.deb"))
+        shutil.copy(iso_deb, self.config.dist_dir)

@@ -12,6 +12,7 @@ import vyos_modular.common.commands
 class VyosModule:
     name: str
     path: pathlib.Path
+    patches_core: bool
     config: t.Dict
 
 
@@ -28,6 +29,7 @@ class GlobalConfig:
         self.build_dir = pathlib.Path("build")
         self.bin_dir = pathlib.Path("bin")
         self.vendor_dir = pathlib.Path("vendor")
+        self.dist_dir = pathlib.Path("dist")
 
         # Clear out the build directory as we dont want any artifacts left over
         shutil.rmtree(self.build_dir, ignore_errors=True)
@@ -69,9 +71,15 @@ class GlobalConfig:
             with open(module_dest / "module.yaml") as config_fh:
                 module_config = yaml.load(config_fh, Loader=yaml.SafeLoader)
 
+            if module_config["version"] != 2:
+                raise RuntimeError(f"Unsupported module version!")
+
             self._modules.append(
                 VyosModule(
-                    name=module_config["name"], path=module_dest, config=module_config
+                    name=module_config["metadata"]["name"],
+                    path=module_dest,
+                    patches_core=module_config["spec"]["patches_core"],
+                    config=module_config,
                 )
             )
 

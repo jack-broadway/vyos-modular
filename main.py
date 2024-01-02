@@ -32,8 +32,11 @@ def _build(args):
     config = GlobalConfig()
     config.config = modular_config
 
-    builder = CoreBuilder()
-    builder.build()
+    patches_core = any([module.patches_core for module in config.modules])
+    if patches_core:
+        print("There are modules that patch vyos-core, building now")
+        builder = CoreBuilder()
+        builder.build()
 
 
 def run(args):
