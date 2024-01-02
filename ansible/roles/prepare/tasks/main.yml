@@ -2,6 +2,10 @@
   ansible.builtin.include_tasks:
     file: mount-iso.yml
 
+- name: Prepare environment
+  ansible.builtin.include_tasks:
+    file: prepare-environment.yml
+
 - name: Set facts
   ansible.builtin.include_tasks:
     file: set-facts.yml

@@ -1,3 +1,4 @@
+import os
 import shutil
 import typing as t
 
@@ -33,14 +34,18 @@ class CoreBuilder:
                 continue
 
             print(f"INFO: Applying module {module.name}")
-            vyos_core_overlay_path = module.path / "vyos-core" / "overlay"
+            vyos_core_overlay_path = (
+                module.path / "vyos-core" / self.config.release / "overlay"
+            )
             if vyos_core_overlay_path.is_dir():
                 print(f"INFO: Applying vyos-core overlay from {module.name}")
                 overlay_destination_path = self.config.build_dir / self.slug
                 vyos_modular.common.commands.apply_overlay(
                     vyos_core_overlay_path, overlay_destination_path
                 )
-            vyos_core_patch_path = module.path / "vyos-core" / "patches"
+            vyos_core_patch_path = (
+                module.path / "vyos-core" / self.config.release / "patches"
+            )
             if vyos_core_patch_path.is_dir():
                 for patch in vyos_core_patch_path.iterdir():
                     print(
@@ -68,9 +73,12 @@ class CoreBuilder:
             vyos_release=self.config.release,
         )
 
-        # Copy artifacts
+        # Copy out all the debs for vyos core including testing etc to bin folder. User may want to test
         for deb in self.config.build_dir.glob("*.deb"):
             shutil.copy(deb, self.config.bin_dir)
 
+        # Remove any existing core deb from the dist folder and copy the freshly built one over
+        for deb in self.config.dist_dir.glob("*.deb"):
+            os.remove(deb)
         iso_deb = next(self.config.build_dir.glob("vyos-1x_*.deb"))
         shutil.copy(iso_deb, self.config.dist_dir)

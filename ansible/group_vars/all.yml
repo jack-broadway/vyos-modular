@@ -1,5 +1,6 @@
 vyos_cd_root: /mnt/cdrom
 vyos_cd_squash_root: /mnt/cdsquash
 
+vyos_install_root: /mnt/inst_root
 vyos_squashfs_image: "{{ vyos_cd_root }}/live/filesystem.squashfs"
 vyos_iso_local: "{{ iso_local | default('/mnt/vyos.iso') }}"

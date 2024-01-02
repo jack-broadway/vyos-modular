@@ -1,0 +1,14 @@
+- name: Restore resolv conf
+  ansible.builtin.copy:
+    src: /tmp/vyos-resolv.conf
+    dest: "{{ vyos_install_root }}/etc/resolv.conf"
+
+- name: Unmount runtime folders
+  mount:
+    name: "{{ vyos_install_root }}{{ item }}"
+    src: "{{ item }}"
+    state: unmounted
+  loop:
+    - /dev
+    - /proc
+    - /sys

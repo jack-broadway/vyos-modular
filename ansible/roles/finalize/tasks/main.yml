@@ -1,0 +1,11 @@
+- name: Cleanup
+  ansible.builtin.include_tasks:
+    file: install-custom-packages.yml
+  
+- name: Cleanup
+  ansible.builtin.include_tasks:
+    file: cleanup.yml
+
+- name: Make ISO
+  ansible.builtin.include_tasks:
+    file: make-iso.yml

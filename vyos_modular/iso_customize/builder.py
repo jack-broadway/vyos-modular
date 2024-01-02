@@ -1,5 +1,6 @@
 import importlib.resources
 import shutil
+import time
 
 import jinja2
 
@@ -14,7 +15,7 @@ class CustomBuilder:
 
     def prepare(self):
         # Remove any existing roles
-        shutil.rmtree(self.config.dist_dir / "roles")
+        shutil.rmtree(self.config.dist_dir / "roles", ignore_errors=True)
 
         for module in self.config.modules:
             if "ansible_roles" in module.config["spec"]:
@@ -47,4 +48,10 @@ class CustomBuilder:
 
         vyos_modular.common.commands.run_vyos_customize_cmd(
             ["ansible-playbook", "playbook.yml"], self.config.dist_dir
+        )
+
+        shutil.move(
+            self.config.dist_dir / "vyos-custom.iso",
+            self.config.bin_dir
+            / f"vyos-{self.config._raw_config['name']}-{time.strftime('%Y%m%d-%H%M%S')}.iso",
         )

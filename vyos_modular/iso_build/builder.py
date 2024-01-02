@@ -59,7 +59,7 @@ class EquuleusBuilder(Builder):
             "--build-type",
             "production",
             "--build-by",
-            "jack-broadway/vyos-builder",
+            "jack-broadway/vyos-modular",
             "--version",
             self.branch,
         ]
@@ -102,7 +102,7 @@ class SagittaBuilder(Builder):
             "--build-type",
             "release",
             "--build-by",
-            "jack-broadway/vyos-builder",
+            "jack-broadway/vyos-modular",
             "--version",
             self.branch,
         ]

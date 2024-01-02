@@ -1,0 +1,28 @@
+- name: Create tailscale service config directory
+  ansible.builtin.file:
+    path: "{{ vyos_install_root }}/tmp/cust_packages/"
+    state: directory
+
+- name: Copy vyos-core package
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ vyos_install_root }}/tmp/cust_packages/"
+    mode: 0644
+  with_fileglob:
+    - "/ansible/*.deb"
+
+- name: Copy extra packages
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ vyos_install_root }}/tmp/cust_packages/"
+    mode: 0644
+  with_fileglob:
+    - "/ansible/packages/*.deb"
+
+- name: Install custom packages
+  command: "chroot {{ vyos_install_root }} /bin/bash -c 'dpkg -i /tmp/cust_packages/*.deb'"
+
+- name: Delete custom package debs
+  file:
+    path: "{{ vyos_install_root }}/tmp/cust_packages/"
+    state: absent
