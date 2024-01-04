@@ -15,6 +15,25 @@
   become: true
   command: mksquashfs {{ vyos_install_root }} /tmp/live-{{ vyos_version }}/live/filesystem.squashfs -comp xz
 
+- name: Get md5 sum of squashfs
+  stat:
+    path: "/tmp/live-{{ vyos_version }}/live/filesystem.squashfs"
+    checksum_algorithm: md5
+    get_checksum: yes
+  register: squashfs_stat
+
+- name: Update iso MD5
+  ansible.builtin.lineinfile:
+    path: "/tmp/live-{{ vyos_version }}/md5sum.txt"
+    search_string: "./live/filesystem.squashfs"
+    line: "{{ squashfs_stat.stat.checksum}}  ./live/filesystem.squashfs"
+
+- name: Verify checksums of all the files in the new ISO image
+  command: md5sum -c md5sum.txt
+  args:
+    chdir: "/tmp/live-{{ vyos_version }}"
+  changed_when: False
+
 - name: create new iso
   become: true
   command:  > 

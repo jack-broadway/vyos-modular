@@ -1,4 +1,4 @@
-- name: Create tailscale service config directory
+- name: Create temp custom packages directory
   ansible.builtin.file:
     path: "{{ vyos_install_root }}/tmp/cust_packages/"
     state: directory
