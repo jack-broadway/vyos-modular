@@ -10,8 +10,17 @@ Required tools on host system
 - `rsync`
 - `docker`
 
+
 ```bash
-pip install -r requirements.txt
+# This will place vyos-modular into your python scripts folder
+
+pip install vyos-modular
+```
+
+### Dev Install
+
+```bash
+pip install -e .
 ```
 
 ## Commands 
@@ -41,7 +50,7 @@ modules:
 Artifacts will output in the bin folder. If unprivileged users dont have access to docker, you will need to run using sudo or root account
 
 ```bash
-python3 main.py build -c tailscale-1.3.5-config.yml
+vyos-modular build -c tailscale-1.3.5-config.yml
 ```
 
 ## Building a base ISO
@@ -50,5 +59,5 @@ If you dont have access to LTS ISOs or want to target a specific commit, vyos-mo
 
 ```bash
 # Build an ISO from the LTS 1.3.5 tag
-python3 main.py build_iso -b 1.3.5 -r equuleus
+vyos-modular build_iso -b 1.3.5 -r equuleus
 ```

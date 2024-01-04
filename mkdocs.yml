@@ -5,6 +5,7 @@ nav:
   - Home: index.md
   - Usage: usage.md
   - Modules: module_list.md
+  - Changelog: changelog.md
   - Module Development:
       - Structure: modules/spec.md
       - Ansible: modules/ansible.md
