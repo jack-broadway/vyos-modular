@@ -42,6 +42,9 @@ class GlobalConfig:
         self._release = self._raw_config["vyos_target"]["release"]
         self._modules: t.List[VyosModule] = []
 
+        if "modules" not in self._raw_config or not self._raw_config["modules"]:
+            raise RuntimeError("Must define at least one module in your configuration")
+
         for module in self._raw_config["modules"]:
             # Clone / Copy module to vendor folder
             module_dest = None

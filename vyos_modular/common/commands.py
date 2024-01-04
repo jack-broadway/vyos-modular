@@ -5,6 +5,7 @@ import os
 import pathlib
 import subprocess
 import typing as t
+from importlib import metadata
 
 
 def _run_command(
@@ -54,6 +55,7 @@ def run_vyos_customize_cmd(
     cmd: t.Iterable[str],
     working_dir: pathlib.Path,
 ):
+    package_version = metadata.version("vyos_modular")
     docker_args = [
         "docker",
         "run",
@@ -66,7 +68,7 @@ def run_vyos_customize_cmd(
         "-w",
         "/ansible",
         "-it",
-        f"jackbroadway/vyos-modular",
+        f"jackbroadway/vyos-modular:{package_version}",
     ]
 
     ret = _run_command(docker_args + cmd)

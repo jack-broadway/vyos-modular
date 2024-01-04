@@ -21,6 +21,7 @@
 
 - name: Install custom packages
   command: "chroot {{ vyos_install_root }} /bin/bash -c 'dpkg -i /tmp/cust_packages/*.deb'"
+  ignore_errors: true
 
 - name: Delete custom package debs
   file:
