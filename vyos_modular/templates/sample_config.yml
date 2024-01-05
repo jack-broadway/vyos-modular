@@ -8,5 +8,5 @@ vyos_target:
   iso: vyos-1.3.5-amd64.iso
 modules:
   - type: git
-    url: https://github.com/kylechase/vyos-module-speedtest.git
+    url: https://github.com/jack-broadway/vyos-module-tailscale.git
     version: main

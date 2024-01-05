@@ -23,29 +23,19 @@ pip install vyos-modular
 pip install -e .
 ```
 
-## Commands 
+## Setting up 
 
-Copy your base iso to the `dist/isos` folder and copy `sample_config.yml` to your desired location.
+Run the following in an empty directory
+
+```bash
+vyos-modular init
+```
+
+Copy your base iso to the `dist/isos` folder and modify `config.yml` to add any modules you desire.
 The sample config below builds with the tailscale module for the 1.3.5 LTS release of equuleus
 
-```yml
-# tailscale-1.3.5-config.yml
-name: tailscale-1.3.5
-vyos_target:
-  # This is used to target an appropriate vyos-core version when using modules
-  # that patch the core
-  branch: 1.3.5
-  release: equuleus
-  # This is the name of an iso found under dist/isos
-  iso: vyos-1.3.5-amd64.iso
-modules:
-  - type: git
-    url: https://github.com/jack-broadway/vyos-module-tailscale.git
-    version: main
-  # There should be a module.yaml at the location pointed to by path
-  - type: local
-    path: /path/to/my/in_dev_module
-```
+
+## Building
 
 Artifacts will output in the bin folder. If unprivileged users dont have access to docker, you will need to run using sudo or root account
 

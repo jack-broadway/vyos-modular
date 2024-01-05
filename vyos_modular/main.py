@@ -1,5 +1,7 @@
 import argparse
+import importlib.metadata
 import pathlib
+import shutil
 
 import yaml
 
@@ -43,12 +45,30 @@ def _build(args):
     custom_builder.build()
 
 
+def _init(_):
+    dist_folder = pathlib.Path("dist")
+
+    isos_folder = dist_folder / "isos"
+    packages_folder = dist_folder / "packages"
+
+    dist_folder.mkdir(exist_ok=True)
+    isos_folder.mkdir(exist_ok=True)
+    packages_folder.mkdir(exist_ok=True)
+
+    with importlib.resources.path(
+        "vyos_modular.templates", "sample_config.yml"
+    ) as sample_config_path:
+        shutil.copy(sample_config_path, "config.yml")
+
+
 def run(args):
     match args.command:
         case "build_iso":
             _iso_build(args)
         case "build":
             _build(args)
+        case "init":
+            _init(args)
         case _:
             raise RuntimeError(f"Unsupported command: {args.command}")
 
@@ -72,6 +92,8 @@ def main():
 
     core_parser = subparsers.add_parser("build")
     core_parser.add_argument("--config", "-c", type=pathlib.Path, required=True)
+
+    subparsers.add_parser("init")
 
     args = parser.parse_args()
     run(args)
