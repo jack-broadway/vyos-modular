@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://jack-broadway.github.io/vyos-modular/usage/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://jack-broadway.github.io/vyos-modular/changelog/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Usage - vyos-modular</title>
+    <title>Changelog - vyos-modular</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Usage";
-        var mkdocs_page_input_path = "usage.md";
-        var mkdocs_page_url = "/vyos-modular/usage/";
+        var mkdocs_page_name = "Changelog";
+        var mkdocs_page_input_path = "changelog.md";
+        var mkdocs_page_url = "/vyos-modular/changelog/";
       </script>
     
     <!--[if lt IE 9]>
@@ -43,30 +43,22 @@
                 <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
                 </li>
               </ul>
-              <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="./">Usage</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#dev-install">Dev Install</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#setting-up">Setting up</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#building">Building</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#building-a-base-iso">Building a base ISO</a>
-    </li>
-    </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../usage/">Usage</a>
                 </li>
               </ul>
               <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../module_list/">Modules</a>
                 </li>
               </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../changelog/">Changelog</a>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Changelog</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#v210">v2.1.0</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#v200">v2.0.0</a>
+    </li>
+    </ul>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Module Development</span></p>
@@ -92,7 +84,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Usage</li>
+      <li class="breadcrumb-item active">Changelog</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -101,43 +93,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="usage">Usage</h1>
-<h2 id="installation">Installation</h2>
-<p>This tool is only supported on linux as it shells out to linux tools.</p>
-<p>Required tools on host system</p>
+                <h1 id="changelog">Changelog</h1>
+<h2 id="v210">v2.1.0</h2>
 <ul>
-<li><code>git</code></li>
-<li><code>rsync</code></li>
-<li><code>docker</code></li>
+<li>Fixes <a href="https://github.com/jack-broadway/vyos-modular/issues/7">Issue #7</a> where circinus (current) version isnt detected properly</li>
+<li>Fixes <a href="https://github.com/jack-broadway/vyos-modular/issues/9">Issue #9</a> where inplace upgrades wouldnt work</li>
+<li>Packages as a proper python package now</li>
+<li>Ties customize docker image to package version</li>
+<li>Adds an <code>init</code> command to vyos-modular so you can run the tool without requiring the directory structure from git</li>
 </ul>
-<pre><code class="language-bash"># This will place vyos-modular into your python scripts folder
-
-pip install vyos-modular
-</code></pre>
-<h3 id="dev-install">Dev Install</h3>
-<pre><code class="language-bash">pip install -e .
-</code></pre>
-<h2 id="setting-up">Setting up</h2>
-<p>Run the following in an empty directory</p>
-<pre><code class="language-bash">vyos-modular init
-</code></pre>
-<p>Copy your base iso to the <code>dist/isos</code> folder and modify <code>config.yml</code> to add any modules you desire.
-The sample config below builds with the tailscale module for the 1.3.5 LTS release of equuleus</p>
-<h2 id="building">Building</h2>
-<p>Artifacts will output in the bin folder. If unprivileged users dont have access to docker, you will need to run using sudo or root account</p>
-<pre><code class="language-bash">vyos-modular build -c tailscale-1.3.5-config.yml
-</code></pre>
-<h2 id="building-a-base-iso">Building a base ISO</h2>
-<p>If you dont have access to LTS ISOs or want to target a specific commit, vyos-modular can also be used to build base isos.</p>
-<pre><code class="language-bash"># Build an ISO from the LTS 1.3.5 tag
-vyos-modular build_iso -b 1.3.5 -r equuleus
-</code></pre>
+<h2 id="v200">v2.0.0</h2>
+<ul>
+<li>Initial rewrite</li>
+<li>Uses ansible to perform iso customization</li>
+<li>Operates on existing ISOs instead of building entirely new ISOs from source</li>
+</ul>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href=".." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../module_list/" class="btn btn-neutral float-right" title="Modules">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../module_list/" class="btn btn-neutral float-left" title="Modules"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../modules/spec/" class="btn btn-neutral float-right" title="Structure">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -160,10 +136,10 @@ vyos-modular build_iso -b 1.3.5 -r equuleus
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../module_list/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../module_list/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../modules/spec/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
