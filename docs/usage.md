@@ -31,7 +31,7 @@ Run the following in an empty directory
 vyos-modular init
 ```
 
-Copy your base iso to the `dist/isos` folder and modify `config.yml` to add any modules you desire.
+Copy your base iso to the `resources/isos` folder and modify `config.yml` to add any modules you desire.
 The sample config below builds with the tailscale module for the 1.3.5 LTS release of equuleus
 
 

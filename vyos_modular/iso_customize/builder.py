@@ -15,16 +15,16 @@ class CustomBuilder:
 
     def prepare(self):
         # Remove any existing roles
-        shutil.rmtree(self.config.dist_dir / "roles", ignore_errors=True)
+        shutil.rmtree(self.config.resource_dir / "roles", ignore_errors=True)
 
         for module in self.config.modules:
             if "ansible_roles" in module.config["spec"]:
-                # We need to copy each role into the dist folder so that its mounted in the container
+                # We need to copy each role into the resources folder so that its mounted in the container
                 roles = module.config["spec"]["ansible_roles"]
                 for role in roles:
                     role_slug = f"{module.name}-{role}"
                     role_src = module.path / "roles" / role
-                    role_dst = self.config.dist_dir / "roles" / role_slug
+                    role_dst = self.config.resource_dir / "roles" / role_slug
                     shutil.copytree(role_src, role_dst)
                     self.ansible_roles.append(role_slug)
 
@@ -35,7 +35,7 @@ class CustomBuilder:
             with open(template_path, "r") as template_fh:
                 template = template = jinja2.Template(template_fh.read())
 
-        with open(self.config.dist_dir / "playbook.yml", "w") as output_fh:
+        with open(self.config.resource_dir / "playbook.yml", "w") as output_fh:
             output_fh.write(
                 template.render(
                     roles=self.ansible_roles,
@@ -47,11 +47,11 @@ class CustomBuilder:
         self.prepare()
 
         vyos_modular.common.commands.run_vyos_customize_cmd(
-            ["ansible-playbook", "playbook.yml"], self.config.dist_dir
+            ["ansible-playbook", "playbook.yml"], self.config.resource_dir
         )
 
         shutil.move(
-            self.config.dist_dir / "vyos-custom.iso",
+            self.config.resource_dir / "vyos-custom.iso",
             self.config.bin_dir
             / f"vyos-{self.config._raw_config['name']}-{time.strftime('%Y%m%d-%H%M%S')}.iso",
         )

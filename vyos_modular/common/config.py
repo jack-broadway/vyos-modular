@@ -29,13 +29,14 @@ class GlobalConfig:
         self.build_dir = pathlib.Path("build")
         self.bin_dir = pathlib.Path("bin")
         self.vendor_dir = pathlib.Path("vendor")
-        self.dist_dir = pathlib.Path("dist")
+        self.resource_dir = pathlib.Path("resources")
 
         # Clear out the build directory as we dont want any artifacts left over
         shutil.rmtree(self.build_dir, ignore_errors=True)
         self.build_dir.mkdir(exist_ok=True)
         self.bin_dir.mkdir(exist_ok=True)
         self.vendor_dir.mkdir(exist_ok=True)
+        self.resource_dir.mkdir(exist_ok=True)
 
     def _process_config(self):
         self._branch = self._raw_config["vyos_target"]["branch"]

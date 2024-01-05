@@ -46,12 +46,11 @@ def _build(args):
 
 
 def _init(_):
-    dist_folder = pathlib.Path("dist")
+    config = GlobalConfig()
 
-    isos_folder = dist_folder / "isos"
-    packages_folder = dist_folder / "packages"
+    isos_folder = config.resource_dir / "isos"
+    packages_folder = config.resource_dir / "packages"
 
-    dist_folder.mkdir(exist_ok=True)
     isos_folder.mkdir(exist_ok=True)
     packages_folder.mkdir(exist_ok=True)
 

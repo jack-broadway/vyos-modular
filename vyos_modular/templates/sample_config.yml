@@ -4,7 +4,7 @@ vyos_target:
   # that patch the core
   branch: 1.3.5
   release: equuleus
-  # This is the name of an iso found under dist/isos
+  # This is the name of an iso found under resources/isos
   iso: vyos-1.3.5-amd64.iso
 modules:
   - type: git
