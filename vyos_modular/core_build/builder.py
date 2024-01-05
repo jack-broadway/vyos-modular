@@ -77,8 +77,5 @@ class CoreBuilder:
         for deb in self.config.build_dir.glob("*.deb"):
             shutil.copy(deb, self.config.bin_dir)
 
-        # Remove any existing core deb from the resources folder and copy the freshly built one over
-        for deb in self.config.resource_dir.glob("*.deb"):
-            os.remove(deb)
         iso_deb = next(self.config.build_dir.glob("vyos-1x_*.deb"))
         shutil.copy(iso_deb, self.config.resource_dir)

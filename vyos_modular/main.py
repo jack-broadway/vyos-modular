@@ -1,5 +1,6 @@
 import argparse
 import importlib.metadata
+import os
 import pathlib
 import shutil
 
@@ -34,6 +35,10 @@ def _build(args):
 
     config = GlobalConfig()
     config.config = modular_config
+
+    # Remove any existing core deb from the resources folder and copy the freshly built one over
+    for deb in config.resource_dir.glob("*.deb"):
+        os.remove(deb)
 
     patches_core = any([module.patches_core for module in config.modules])
     if patches_core:
