@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.1.2
+- Fixes [Issue #11](https://github.com/jack-broadway/vyos-modular/issues/11) where the sagitta version check didnt work on branch head builds
+
 ## v2.1.1
 - Fixes [Issue #10](https://github.com/jack-broadway/vyos-modular/issues/10) where the publish package didnt work
 - Fixes bug where if you changed config to only include modules that didnt patch vyos core, you'd still get the previously vyos-1x package installed 
