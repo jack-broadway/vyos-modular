@@ -1,4 +1,6 @@
 # Changelog
+## v2.2.0
+- Allows symlinks to be followed in modules
 
 ## v2.1.2
 - Fixes [Issue #11](https://github.com/jack-broadway/vyos-modular/issues/11) where the sagitta version check didnt work on branch head builds

@@ -1,6 +1,7 @@
 """
 Wrapper commands for using docker containers and git
 """
+
 import os
 import pathlib
 import subprocess
@@ -98,7 +99,7 @@ def clone_repo(url: str, branch: str, output_folder: pathlib.Path):
 
 def apply_overlay(src: pathlib.Path, dst: pathlib.Path):
     # Add the trailing / to src to apply the subcontents as the overlay
-    ret = _run_command(["rsync", "-a", f"{src}/", str(dst)])
+    ret = _run_command(["rsync", "-La", f"{src}/", str(dst)])
     if ret != 0:
         raise RuntimeError("Failed to apply overlay")
 
