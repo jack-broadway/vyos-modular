@@ -1,20 +1,3 @@
-- name: Extract squashfs image from ISO to root partition
-  command: unsquashfs -d {{ vyos_install_root }} {{ vyos_squashfs_image }}
-  args:
-   creates: "{{ vyos_install_root }}"
-
-- name: Mount runtime fs so chroot works properly
-  mount:
-    name: "{{ vyos_install_root }}{{ item }}"
-    src: "{{ item }}"
-    fstype: none
-    opts: bind
-    state: mounted
-  loop:
-    - /dev
-    - /proc
-    - /sys
-
 - name: Backup chroot resolv.conf
   ansible.builtin.copy:
     src: "{{ vyos_install_root }}/etc/resolv.conf"
@@ -24,3 +7,9 @@
   ansible.builtin.copy:
     src: /etc/resolv.conf
     dest: "{{ vyos_install_root }}/etc/resolv.conf"
+
+- name: Put debian.list
+  become: true
+  template:
+    src: "templates/debian.list.j2"
+    dest: "{{ vyos_install_root }}/etc/apt/sources.list.d/debian.list"

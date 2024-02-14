@@ -3,6 +3,11 @@
     src: /tmp/vyos-resolv.conf
     dest: "{{ vyos_install_root }}/etc/resolv.conf"
 
+- name: Remove debian list
+  file:
+    path: "{{ vyos_install_root }}/etc/apt/sources.list.d/debian.list"
+    state: absent
+
 - name: Unmount runtime folders
   mount:
     name: "{{ vyos_install_root }}{{ item }}"

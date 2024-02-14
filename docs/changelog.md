@@ -1,4 +1,7 @@
 # Changelog
+## v2.3.0
+- Allow the chroot environment to be able to install dependencies for packages
+
 ## v2.2.0
 - Allows symlinks to be followed in modules
 

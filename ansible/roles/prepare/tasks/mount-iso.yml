@@ -12,3 +12,20 @@
   args:
     chdir: "{{ vyos_cd_root }}"
   changed_when: False
+
+- name: Extract squashfs image from ISO to root partition
+  command: unsquashfs -d {{ vyos_install_root }} {{ vyos_squashfs_image }}
+  args:
+   creates: "{{ vyos_install_root }}"
+
+- name: Mount runtime fs so chroot works properly
+  mount:
+    name: "{{ vyos_install_root }}{{ item }}"
+    src: "{{ item }}"
+    fstype: none
+    opts: bind
+    state: mounted
+  loop:
+    - /dev
+    - /proc
+    - /sys
