@@ -1,4 +1,8 @@
 # Changelog
+
+## v2.4.0
+- Updates and checks the SHA256sum of the ISO in addition to the MD5 sum for platforms that check SHA256 instead
+
 ## v2.3.0
 - Allow the chroot environment to be able to install dependencies for packages
 

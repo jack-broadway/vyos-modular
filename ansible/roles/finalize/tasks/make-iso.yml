@@ -20,16 +20,35 @@
     path: "/tmp/live-{{ vyos_version }}/live/filesystem.squashfs"
     checksum_algorithm: md5
     get_checksum: yes
-  register: squashfs_stat
+  register: squashfs_stat_md5
 
 - name: Update iso MD5
   ansible.builtin.lineinfile:
     path: "/tmp/live-{{ vyos_version }}/md5sum.txt"
     search_string: "./live/filesystem.squashfs"
-    line: "{{ squashfs_stat.stat.checksum}}  ./live/filesystem.squashfs"
+    line: "{{ squashfs_stat_md5.stat.checksum}}  ./live/filesystem.squashfs"
 
-- name: Verify checksums of all the files in the new ISO image
+- name: Get sha256 sum of squashfs
+  stat:
+    path: "/tmp/live-{{ vyos_version }}/live/filesystem.squashfs"
+    checksum_algorithm: sha256
+    get_checksum: yes
+  register: squashfs_stat_sha256
+
+- name: Update iso SHA256
+  ansible.builtin.lineinfile:
+    path: "/tmp/live-{{ vyos_version }}/sha256sum.txt"
+    search_string: "./live/filesystem.squashfs"
+    line: "{{ squashfs_stat_sha256.stat.checksum}}  ./live/filesystem.squashfs"
+
+- name: Verify MD5 checksums of all the files in the new ISO image
   command: md5sum -c md5sum.txt
+  args:
+    chdir: "/tmp/live-{{ vyos_version }}"
+  changed_when: False
+
+- name: Verify SHA256 checksums of all the files in the new ISO image
+  command: sha256sum -c sha256sum.txt
   args:
     chdir: "/tmp/live-{{ vyos_version }}"
   changed_when: False
